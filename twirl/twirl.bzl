@@ -29,7 +29,11 @@ def _impl(ctx):
   outputs = []
   for src in ctx.files.srcs:
     parts = src.short_path.split(".")
-    output = ctx.actions.declare_file("gen/{}/{}".format(ctx.label.name, ".".join(parts[:-2] + [parts[-1], parts[-2]])))
+    path_parts = parts[-3].split("/")
+    corrected_path = "/".join(path_parts[:-1] + [parts[-1]] + [path_parts[-1]])
+    # print("path_parts: ", path_parts)
+    output = ctx.actions.declare_file("gen/{}/{}".format(ctx.label.name, ".".join([corrected_path] + [parts[-2]] )))
+    # print("output: ", output)
 
     args = ctx.actions.args()
     if hasattr(args, "add_all"): # Bazel 0.13.0+
